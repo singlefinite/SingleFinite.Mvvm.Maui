@@ -222,6 +222,10 @@ public partial class DialogViewPresenter : TemplatedView
         }
     }
 
+    #endregion
+
+    #region Methods
+
     /// <summary>
     /// Get the control from the template with the matching name.
     /// </summary>
@@ -235,7 +239,7 @@ public partial class DialogViewPresenter : TemplatedView
     {
         var child = GetTemplateChild(name) ??
             throw new ArgumentException(
-                $"Unable to find element with name '{name}' in XAML template."
+                $"The template for {nameof(DialogViewPresenter)} must contain a {nameof(TType)} named '{name}'."
             );
 
         return (TType)child;

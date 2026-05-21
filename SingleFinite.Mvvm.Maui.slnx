@@ -1,0 +1,14 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path=".editorconfig" />
+    <File Path=".gitignore" />
+    <File Path="ICON.png" />
+    <File Path="LICENSE.txt" />
+    <File Path="README.md" />
+  </Folder>
+  <Project Path="Example.App/Example.App.csproj">
+    <Deploy Solution="Debug|*" />
+  </Project>
+  <Project Path="Example.Models/Example.Models.csproj" />
+  <Project Path="SingleFinite.Mvvm.Maui/SingleFinite.Mvvm.Maui.csproj" />
+</Solution>

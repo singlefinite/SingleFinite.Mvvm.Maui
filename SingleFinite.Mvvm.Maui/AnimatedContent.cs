@@ -44,8 +44,10 @@ public partial class AnimatedContent : TemplatedView
     {
         base.OnApplyTemplate();
         var contentPresenter = GetTemplateChild("ContentPresenter")
-            as ContentPresenter;
-        contentPresenter?.Content = _layout;
+            as ContentPresenter
+            ?? throw new ArgumentException($"The template for {nameof(AnimatedContent)} must contain a {nameof(ContentPresenter)} named 'ContentPresenter'.");
+
+        contentPresenter.Content = _layout;
     }
 
     /// <summary>

@@ -96,6 +96,11 @@ public partial class DialogViewPresenterPage : ContentPage
             field = value;
             Content = value;
 
+            // Make the background color for the scrim transparent as the page
+            // will handle the scrim.
+            //
+            value?.ScrimBackgroundColor = Colors.Transparent;
+
             SubscribeToDialogViewPresenter();
 
             OnIsDialogOpenChanged(

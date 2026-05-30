@@ -24,7 +24,7 @@
     <Style TargetType="local:ViewPresenter" BasedOn="{StaticResource DefaultViewPresenterStyle}" />
 
     <Style x:Key="DefaultDialogViewPresenterStyle" TargetType="local:DialogViewPresenter">
-        <Setter Property="ScrimBackgroundColor" Value="#00000052" />
+        <Setter Property="ScrimBackgroundColor" Value="#52000000" />
         <Setter Property="ControlTemplate">
             <Setter.Value>
                 <ControlTemplate x:DataType="local:DialogViewPresenter">

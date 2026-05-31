@@ -51,6 +51,35 @@ public partial class AnimatedContent : TemplatedView
     }
 
     /// <summary>
+    /// Set the content immediately without applying any animation.
+    /// </summary>
+    /// <param name="view">The view to set.</param>
+    public void SetContent(View? view)
+    {
+        var exitingView = _layout.Children.FirstOrDefault() as View;
+        if (view is not null && view == exitingView)
+            return;
+
+        exitingView?.CancelAnimations();
+
+        if (view is not null)
+        {
+            view.CancelAnimations();
+            _layout.Children.Add(view);
+        }
+
+        if (view is null)
+        {
+            _layout.Children.Clear();
+        }
+        else
+        {
+            while (_layout.Children.Count > 1)
+                _layout.RemoveAt(0);
+        }
+    }
+
+    /// <summary>
     /// Transition from the current view to the provided view using the
     /// exitAnimation and enterAnimation animations respectively.
     /// </summary>
@@ -73,6 +102,12 @@ public partial class AnimatedContent : TemplatedView
         IViewAnimation? exitAnimation = null
     )
     {
+        if (!IsLoaded)
+        {
+            SetContent(view);
+            return;
+        }
+
         var resolvedEnterAnimation = enterAnimation ?? IViewAnimation.FadeIn();
         var resolvedExitAnimation = exitAnimation ?? IViewAnimation.FadeOut();
 

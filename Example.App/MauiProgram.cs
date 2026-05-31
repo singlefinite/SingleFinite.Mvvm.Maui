@@ -1,5 +1,8 @@
 ﻿using CommunityToolkit.Maui.Markup;
+using Example.Models;
 using Microsoft.Extensions.Logging;
+using SingleFinite.Mvvm;
+using SingleFinite.Mvvm.Maui;
 
 namespace Example.App;
 
@@ -31,7 +34,16 @@ public static class MauiProgram
         builder.Logging.AddDebug();
 #endif
 
-        return builder.Build();
+        var appHost = new AppHostBuilder()
+            .AddMaui<IMainViewModel, MainViewModel>()
+            .AddExampleApp()
+            .Build(builder.Services);
+
+        var mauiApp = builder.Build();
+
+        appHost.Start(mauiApp.Services);
+
+        return mauiApp;
     }
 
     #endregion

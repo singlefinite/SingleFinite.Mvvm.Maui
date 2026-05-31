@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="SingleFinite.Mvvm" Version="0.0.42" />
+    <PackageReference Include="SingleFinite.Mvvm" Version="0.0.43" />
   </ItemGroup>
 
 </Project>

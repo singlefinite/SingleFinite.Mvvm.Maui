@@ -37,7 +37,7 @@ public partial class App : Application
     /// <summary>
     /// Holds the app host.
     /// </summary>
-    private IAppHost? _appHost = null;
+    private IMauiApp _app;
 
     #endregion
 
@@ -46,8 +46,9 @@ public partial class App : Application
     /// <summary>
     /// Constructor.
     /// </summary>
-    public App()
+    public App(IMauiApp app)
     {
+        _app = app;
         InitializeComponent();
     }
 
@@ -62,12 +63,7 @@ public partial class App : Application
     /// <returns>The window for the app host.</returns>
     protected override Window CreateWindow(IActivationState? activationState)
     {
-        _appHost ??= new AppHostBuilder()
-            .AddMaui<IMainViewModel, MainViewModel>()
-            .AddExampleApp()
-            .BuildAndStart();
-
-        return _appHost.ServiceProvider.GetRequiredService<IMauiApp>().Window;
+        return _app.Window;
     }
 
     #endregion

@@ -86,8 +86,11 @@ public static class AppHostBuilderExtensions
                         );
                 }
             )
-            .AddOnStarted<IMauiApp>(
-                app => app.Start()
+            .AddInitializers(
+                initializers =>
+                {
+                    initializers.Add<IMauiApp>(app => app.Start());
+                }
             );
 
     #endregion

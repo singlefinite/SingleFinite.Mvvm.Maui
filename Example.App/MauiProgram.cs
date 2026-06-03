@@ -1,7 +1,6 @@
 ﻿using CommunityToolkit.Maui.Markup;
 using Example.Models;
 using Microsoft.Extensions.Logging;
-using SingleFinite.Mvvm;
 using SingleFinite.Mvvm.Maui;
 
 namespace Example.App;
@@ -23,6 +22,10 @@ public static class MauiProgram
         builder
             .UseMauiApp<App>()
             .UseMauiCommunityToolkitMarkup()
+            .UseSingleFiniteMvvm<IMainViewModel, MainViewModel>(appHostBuilder =>
+            {
+                appHostBuilder.AddExampleApp();
+            })
             .ConfigureFonts(fonts =>
             {
                 fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
@@ -34,16 +37,7 @@ public static class MauiProgram
         builder.Logging.AddDebug();
 #endif
 
-        var appHost = new AppHostBuilder()
-            .AddMaui<IMainViewModel, MainViewModel>()
-            .AddExampleApp()
-            .Build(builder.Services);
-
-        var mauiApp = builder.Build();
-
-        appHost.Start(mauiApp.Services);
-
-        return mauiApp;
+        return builder.Build();
     }
 
     #endregion

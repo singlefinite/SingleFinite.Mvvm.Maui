@@ -19,11 +19,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using Example.Models;
-using SingleFinite.Mvvm;
-using SingleFinite.Mvvm.Maui;
 using SingleFinite.Mvvm.Maui.Services;
-using SingleFinite.Mvvm.Services;
 
 namespace Example.App;
 
@@ -35,9 +31,9 @@ public partial class App : Application
     #region Fields
 
     /// <summary>
-    /// Holds the app host.
+    /// Holds the app.
     /// </summary>
-    private IMauiApp _app;
+    private readonly IMauiApp _app;
 
     #endregion
 
@@ -46,6 +42,7 @@ public partial class App : Application
     /// <summary>
     /// Constructor.
     /// </summary>
+    /// <param name="app">The app.</param>
     public App(IMauiApp app)
     {
         _app = app;
@@ -63,6 +60,7 @@ public partial class App : Application
     /// <returns>The window for the app host.</returns>
     protected override Window CreateWindow(IActivationState? activationState)
     {
+        _app.Start();
         return _app.Window;
     }
 

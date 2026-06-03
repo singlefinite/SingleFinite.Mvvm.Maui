@@ -27,14 +27,16 @@ namespace SingleFinite.Mvvm.Maui.Internal.Services;
 /// <summary>
 /// Implementation of <see cref="IMauiApp"/>.
 /// </summary>
-/// <param name="viewBuilder">Used to build main view.</param>
-/// <param name="exceptionHandler">Used to log unhandled exceptions.</param>
 /// <typeparam name="TMainViewModel">
 /// The type of view model to build for the main window.
 /// </typeparam>
+/// <param name="viewBuilder">Used to build main view.</param>
+/// <param name="appHost">The app host.</param>
+/// <param name="serviceProvider">The service provider.</param>
 internal partial class MauiApp<TMainViewModel>(
     IViewBuilder viewBuilder,
-    IExceptionHandler exceptionHandler
+    AppHost appHost,
+    IServiceProvider serviceProvider
 ) :
     IMauiApp<TMainViewModel>,
     IDisposable
@@ -45,7 +47,7 @@ internal partial class MauiApp<TMainViewModel>(
     /// <summary>
     /// Set to true when the app has been started.
     /// </summary>
-    private bool _isStarted;
+    private bool _isStarted = false;
 
     /// <summary>
     /// Set to true when the app has been disposed.
@@ -59,9 +61,12 @@ internal partial class MauiApp<TMainViewModel>(
     /// <inheritdoc/>
     public IView<TMainViewModel> View
     {
-        get => field ?? throw new InvalidOperationException(
-            "The app has not been started yet."
-        );
+        get
+        {
+            return field ?? throw new InvalidOperationException(
+                "The app has not been started yet."
+            );
+        }
         private set;
     }
 
@@ -83,22 +88,13 @@ internal partial class MauiApp<TMainViewModel>(
         if (_isStarted)
             return;
 
-        AppDomain.CurrentDomain.UnhandledException += (sender, e) =>
-        {
-            if (e.ExceptionObject is Exception ex)
-            {
-                exceptionHandler.Handle(
-                    exception: ex,
-                    sourceArgs: sender
-                );
-            }
-        };
+        _isStarted = true;
+
+        appHost.Start(serviceProvider);
 
         var assembleResult = viewBuilder.Assemble<TMainViewModel>();
         View = assembleResult.View;
         assembleResult.Start();
-
-        _isStarted = true;
     }
 
     /// <inheritdoc/>

@@ -85,12 +85,6 @@ public static class AppHostBuilderExtensions
                             serviceProvider.GetRequiredService<IMauiApp<TMainViewModel>>()
                         );
                 }
-            )
-            .AddInitializers(
-                initializers =>
-                {
-                    initializers.Add<IMauiApp>(app => app.Start());
-                }
             );
 
     #endregion

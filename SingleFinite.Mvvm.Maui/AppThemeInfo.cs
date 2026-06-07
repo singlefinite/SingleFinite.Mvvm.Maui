@@ -19,45 +19,23 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using SingleFinite.Mvvm.Maui.Services;
-using SingleFinite.Mvvm.Services;
+namespace SingleFinite.Mvvm.Maui;
 
-namespace SingleFinite.Mvvm.Maui.Internal.Services;
-
-/// <summary>
-/// Implementation of <see cref="IMainDispatcher"/> that uses the
-/// <see cref="Dispatcher"/> from the main window to execute functions.
-/// </summary>
-/// <param name="appHost">
-/// The Maui app host whose window dispatcher will be used.
-/// </param>
-internal partial class DispatcherMain(IMauiAppHost appHost) : IMainDispatcher
+public class AppThemeInfo
 {
-    #region Methods
+    private static object Empty = new();
 
-    /// <inheritdoc/>
-    public Task<TResult> RunAsync<TResult>(
-        Func<Task<TResult>> func,
-        CancellationToken cancellationToken = default
-    )
+    public AppThemeInfo() : this(light: Empty, dark: Empty)
     {
-        var taskCompletionSource = new TaskCompletionSource<TResult>();
-
-        appHost.Window.Dispatcher.DispatchAsync(async () =>
-        {
-            try
-            {
-                cancellationToken.ThrowIfCancellationRequested();
-                taskCompletionSource.SetResult(await func());
-            }
-            catch (Exception ex)
-            {
-                taskCompletionSource.SetException(ex);
-            }
-        });
-
-        return taskCompletionSource.Task;
     }
 
-    #endregion
+    public AppThemeInfo(object light, object dark)
+    {
+        Light = light;
+        Dark = dark;
+    }
+
+    public object Light { get; set; }
+
+    public object Dark { get; set; }
 }

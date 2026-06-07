@@ -24,6 +24,7 @@ using Fonts;
 using SingleFinite.Essentials;
 using SingleFinite.Mvvm;
 using SingleFinite.Mvvm.Maui;
+using SingleFinite.Mvvm.Maui.Services;
 
 namespace Example.App.Views;
 
@@ -38,7 +39,7 @@ public partial class MainWindow : Window, IView<MainViewModel>
     /// Constructor.
     /// </summary>
     /// <param name="viewModel">The view model for this view.</param>
-    public MainWindow(MainViewModel viewModel)
+    public MainWindow(MainViewModel viewModel, IResources resources)
     {
         ViewModel = viewModel;
 

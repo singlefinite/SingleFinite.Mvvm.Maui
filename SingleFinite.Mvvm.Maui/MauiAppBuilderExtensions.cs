@@ -19,6 +19,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+using SingleFinite.Mvvm.Maui.Internal;
+
 namespace SingleFinite.Mvvm.Maui;
 
 /// <summary>
@@ -44,11 +46,11 @@ public static class MauiAppBuilderExtensions
     /// <returns>The Maui app builder that was extended.</returns>
     public static MauiAppBuilder UseSingleFiniteMvvm<TMainViewModelInterface, TMainViewModelImplementation>(
         this MauiAppBuilder mauiAppBuilder,
-        Action<AppHostBuilder>? configure = default)
+        Action<MauiAppHostBuilder<TMainViewModelImplementation>>? configure = default)
         where TMainViewModelInterface : class
         where TMainViewModelImplementation : class, TMainViewModelInterface, IViewModel
     {
-        var appHostBuilder = new AppHostBuilder();
+        var appHostBuilder = new MauiAppHostBuilder<TMainViewModelImplementation>();
         appHostBuilder.AddMaui<TMainViewModelInterface, TMainViewModelImplementation>();
 
         configure?.Invoke(appHostBuilder);
@@ -73,10 +75,10 @@ public static class MauiAppBuilderExtensions
     /// <returns>The Maui app builder that was extended.</returns>
     public static MauiAppBuilder UseSingleFiniteMvvm<TMainViewModel>(
         this MauiAppBuilder mauiAppBuilder,
-        Action<AppHostBuilder>? configure = default)
+        Action<MauiAppHostBuilder<TMainViewModel>>? configure = default)
         where TMainViewModel : IViewModel
     {
-        var appHostBuilder = new AppHostBuilder();
+        var appHostBuilder = new MauiAppHostBuilder<TMainViewModel>();
         appHostBuilder.AddMaui<TMainViewModel>();
 
         configure?.Invoke(appHostBuilder);

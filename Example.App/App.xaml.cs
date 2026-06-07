@@ -31,9 +31,9 @@ public partial class App : Application
     #region Fields
 
     /// <summary>
-    /// Holds the app.
+    /// Holds the app host.
     /// </summary>
-    private readonly IMauiApp _app;
+    private readonly IMauiAppHost _appHost;
 
     #endregion
 
@@ -42,10 +42,10 @@ public partial class App : Application
     /// <summary>
     /// Constructor.
     /// </summary>
-    /// <param name="app">The app.</param>
-    public App(IMauiApp app)
+    /// <param name="appHost">The app host.</param>
+    public App(IMauiAppHost appHost)
     {
-        _app = app;
+        _appHost = appHost;
         InitializeComponent();
     }
 
@@ -58,11 +58,8 @@ public partial class App : Application
     /// </summary>
     /// <param name="activationState">Not used.</param>
     /// <returns>The window for the app host.</returns>
-    protected override Window CreateWindow(IActivationState? activationState)
-    {
-        _app.Start();
-        return _app.Window;
-    }
+    protected override Window CreateWindow(IActivationState? activationState) =>
+        _appHost.Window;
 
     #endregion
 }

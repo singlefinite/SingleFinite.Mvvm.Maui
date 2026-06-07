@@ -23,12 +23,12 @@ using SingleFinite.Mvvm.Maui.Internal.Services;
 using SingleFinite.Mvvm.Maui.Services;
 using SingleFinite.Mvvm.Services;
 
-namespace SingleFinite.Mvvm.Maui;
+namespace SingleFinite.Mvvm.Maui.Internal;
 
 /// <summary>
 /// Extensions for the <see cref="AppHostBuilder"/> class.
 /// </summary>
-public static class AppHostBuilderExtensions
+internal static class AppHostBuilderExtensions
 {
     #region Methods
 
@@ -46,7 +46,7 @@ public static class AppHostBuilderExtensions
     /// </typeparam>
     /// <param name="builder">The builder to extend.</param>
     /// <returns>The builder that was passed in.</returns>
-    public static AppHostBuilder AddMaui<TMainViewModelInterface, TMainViewModelImplementation>(
+    internal static AppHostBuilder AddMaui<TMainViewModelInterface, TMainViewModelImplementation>(
         this AppHostBuilder builder
     )
         where TMainViewModelInterface : class
@@ -55,7 +55,7 @@ public static class AppHostBuilderExtensions
                 services =>
                 {
                     services.AddSingleton<TMainViewModelInterface>(
-                        serviceProvider => serviceProvider.GetRequiredService<IMauiApp<TMainViewModelImplementation>>().View.ViewModel
+                        serviceProvider => serviceProvider.GetRequiredService<IMauiAppHost<TMainViewModelImplementation>>().View.ViewModel
                     );
                 }
             )
@@ -71,7 +71,7 @@ public static class AppHostBuilderExtensions
     /// </typeparam>
     /// <param name="builder">The builder to extend.</param>
     /// <returns>The builder that was passed in.</returns>
-    public static AppHostBuilder AddMaui<TMainViewModel>(
+    internal static AppHostBuilder AddMaui<TMainViewModel>(
         this AppHostBuilder builder
     )
         where TMainViewModel : IViewModel => builder
@@ -79,10 +79,16 @@ public static class AppHostBuilderExtensions
                 services =>
                 {
                     services
+                        .AddSingleton<IResources, Services.Resources>()
                         .AddSingleton<IMainDispatcher, DispatcherMain>()
-                        .AddSingleton<IMauiApp<TMainViewModel>, MauiApp<TMainViewModel>>()
-                        .AddSingleton<IMauiApp>(serviceProvider =>
-                            serviceProvider.GetRequiredService<IMauiApp<TMainViewModel>>()
+                        .AddSingleton<IMauiAppHost<TMainViewModel>>(serviceProvider =>
+                        {
+                            var appHost = (MauiAppHost<TMainViewModel>)serviceProvider.GetRequiredService<AppHost>();
+                            appHost.ServiceProvider = serviceProvider;
+                            return appHost;
+                        })
+                        .AddSingleton<IMauiAppHost>(serviceProvider =>
+                            serviceProvider.GetRequiredService<IMauiAppHost<TMainViewModel>>()
                         );
                 }
             );

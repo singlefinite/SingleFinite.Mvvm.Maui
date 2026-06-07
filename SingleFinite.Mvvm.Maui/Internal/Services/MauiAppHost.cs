@@ -25,49 +25,56 @@ using SingleFinite.Mvvm.Services;
 namespace SingleFinite.Mvvm.Maui.Internal.Services;
 
 /// <summary>
-/// Implementation of <see cref="IMauiApp"/>.
+/// Custom AppHost for Maui.
 /// </summary>
 /// <typeparam name="TMainViewModel">
 /// The type of view model to build for the main window.
 /// </typeparam>
-/// <param name="viewBuilder">Used to build main view.</param>
-/// <param name="appHost">The app host.</param>
-/// <param name="serviceProvider">The service provider.</param>
-internal partial class MauiApp<TMainViewModel>(
-    IViewBuilder viewBuilder,
-    AppHost appHost,
-    IServiceProvider serviceProvider
-) :
-    IMauiApp<TMainViewModel>,
-    IDisposable
+/// <param name="initializers">Initializers for the app host.</param>
+internal partial class MauiAppHost<TMainViewModel>(
+    IInitializerCollection initializers
+) : AppHost(initializers), IMauiAppHost<TMainViewModel>
     where TMainViewModel : IViewModel
 {
     #region Fields
 
     /// <summary>
-    /// Set to true when the app has been started.
+    /// Holds the View.
     /// </summary>
-    private bool _isStarted = false;
-
-    /// <summary>
-    /// Set to true when the app has been disposed.
-    /// </summary>
-    private bool _isDisposed;
+    private IView<TMainViewModel>? _view = null;
 
     #endregion
 
     #region Properties
+
+    /// <summary>
+    /// If set, this service provider will be used to start the app host if the
+    /// View is accessed before the app host has been started.
+    /// </summary>
+    public IServiceProvider? ServiceProvider { get; set; } = null;
+
+    /// <inheritdoc/>
+    IView IMauiAppHost.View => View;
 
     /// <inheritdoc/>
     public IView<TMainViewModel> View
     {
         get
         {
-            return field ?? throw new InvalidOperationException(
-                "The app has not been started yet."
-            );
+            if (_view is null && ServiceProvider is not null)
+                Start(ServiceProvider);
+
+            if (_view is null)
+                throw new InvalidOperationException(
+                    "The app host has not been started."
+                );
+
+            return _view;
         }
-        private set;
+        private set
+        {
+            _view = value;
+        }
     }
 
     /// <inheritdoc/>
@@ -81,35 +88,17 @@ internal partial class MauiApp<TMainViewModel>(
     #region Methods
 
     /// <inheritdoc/>
-    public void Start()
+    public override void Start(IServiceProvider provider)
     {
-        ObjectDisposedException.ThrowIf(_isDisposed, this);
-
-        if (_isStarted)
+        if (_view is not null)
             return;
 
-        _isStarted = true;
-
-        appHost.Start(serviceProvider);
-
+        var viewBuilder = provider.GetRequiredService<IViewBuilder>();
         var assembleResult = viewBuilder.Assemble<TMainViewModel>();
         View = assembleResult.View;
         assembleResult.Start();
-    }
 
-    /// <inheritdoc/>
-    public void Activate()
-    {
-        ObjectDisposedException.ThrowIf(_isDisposed, this);
-        Application.Current?.ActivateWindow(Window);
-    }
-
-    /// <summary>
-    /// Mark this object as disposed.
-    /// </summary>
-    public void Dispose()
-    {
-        _isDisposed = true;
+        base.Start(provider);
     }
 
     #endregion

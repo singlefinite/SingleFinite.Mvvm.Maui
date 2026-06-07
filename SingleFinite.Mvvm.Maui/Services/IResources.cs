@@ -19,45 +19,22 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using SingleFinite.Mvvm.Maui.Services;
-using SingleFinite.Mvvm.Services;
-
-namespace SingleFinite.Mvvm.Maui.Internal.Services;
+namespace SingleFinite.Mvvm.Maui.Services;
 
 /// <summary>
-/// Implementation of <see cref="IMainDispatcher"/> that uses the
-/// <see cref="Dispatcher"/> from the main window to execute functions.
+/// Service used to get resources.
 /// </summary>
-/// <param name="appHost">
-/// The Maui app host whose window dispatcher will be used.
-/// </param>
-internal partial class DispatcherMain(IMauiAppHost appHost) : IMainDispatcher
+public interface IResources
 {
-    #region Methods
-
-    /// <inheritdoc/>
-    public Task<TResult> RunAsync<TResult>(
-        Func<Task<TResult>> func,
-        CancellationToken cancellationToken = default
-    )
-    {
-        var taskCompletionSource = new TaskCompletionSource<TResult>();
-
-        appHost.Window.Dispatcher.DispatchAsync(async () =>
-        {
-            try
-            {
-                cancellationToken.ThrowIfCancellationRequested();
-                taskCompletionSource.SetResult(await func());
-            }
-            catch (Exception ex)
-            {
-                taskCompletionSource.SetException(ex);
-            }
-        });
-
-        return taskCompletionSource.Task;
-    }
-
-    #endregion
+    /// <summary>
+    /// Try to get a resource value by its key.
+    /// </summary>
+    /// <param name="key">The resource key.</param>
+    /// <param name="value">
+    /// The parameter that is assigned the value if it's found.
+    /// </param>
+    /// <returns>
+    /// True if the resource is found; otherwise, false.
+    /// </returns>
+    bool TryGetValue(string key, out object value);
 }

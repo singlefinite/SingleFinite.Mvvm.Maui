@@ -20,44 +20,36 @@
 // SOFTWARE.
 
 using SingleFinite.Mvvm.Maui.Services;
-using SingleFinite.Mvvm.Services;
 
 namespace SingleFinite.Mvvm.Maui.Internal.Services;
 
 /// <summary>
-/// Implementation of <see cref="IMainDispatcher"/> that uses the
-/// <see cref="Dispatcher"/> from the main window to execute functions.
+/// Implements <see cref="IResources"/>.
 /// </summary>
-/// <param name="appHost">
-/// The Maui app host whose window dispatcher will be used.
-/// </param>
-internal partial class DispatcherMain(IMauiAppHost appHost) : IMainDispatcher
+/// <param name="application">The application.</param>
+/// <exception cref="ArgumentException">
+/// Thrown if the application parameter is not of type Application.
+/// </exception>
+internal class Resources(IApplication application) : IResources
 {
+    #region Fields
+
+    /// <summary>
+    /// Holds the application.
+    /// </summary>
+    private readonly Application _application = application as Application ??
+        throw new ArgumentException(
+            message: "Must be of type Application.",
+            paramName: nameof(application)
+        );
+
+    #endregion
+
     #region Methods
 
     /// <inheritdoc/>
-    public Task<TResult> RunAsync<TResult>(
-        Func<Task<TResult>> func,
-        CancellationToken cancellationToken = default
-    )
-    {
-        var taskCompletionSource = new TaskCompletionSource<TResult>();
-
-        appHost.Window.Dispatcher.DispatchAsync(async () =>
-        {
-            try
-            {
-                cancellationToken.ThrowIfCancellationRequested();
-                taskCompletionSource.SetResult(await func());
-            }
-            catch (Exception ex)
-            {
-                taskCompletionSource.SetException(ex);
-            }
-        });
-
-        return taskCompletionSource.Task;
-    }
+    public bool TryGetValue(string key, out object value) =>
+        _application.Resources.TryGetValue(key, out value);
 
     #endregion
 }

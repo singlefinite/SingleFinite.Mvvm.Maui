@@ -19,45 +19,25 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using SingleFinite.Mvvm.Maui.Services;
-using SingleFinite.Mvvm.Services;
+using SingleFinite.Mvvm.Maui.Internal.Services;
 
-namespace SingleFinite.Mvvm.Maui.Internal.Services;
+namespace SingleFinite.Mvvm.Maui;
 
 /// <summary>
-/// Implementation of <see cref="IMainDispatcher"/> that uses the
-/// <see cref="Dispatcher"/> from the main window to execute functions.
+/// AppHost builder for Maui apps.
 /// </summary>
-/// <param name="appHost">
-/// The Maui app host whose window dispatcher will be used.
-/// </param>
-internal partial class DispatcherMain(IMauiAppHost appHost) : IMainDispatcher
+/// <typeparam name="TMainViewModel">
+/// The type of view model to build for the main window.
+/// </typeparam>
+public class MauiAppHostBuilder<TMainViewModel> : AppHostBuilder
+    where TMainViewModel : IViewModel
 {
     #region Methods
 
-    /// <inheritdoc/>
-    public Task<TResult> RunAsync<TResult>(
-        Func<Task<TResult>> func,
-        CancellationToken cancellationToken = default
-    )
-    {
-        var taskCompletionSource = new TaskCompletionSource<TResult>();
-
-        appHost.Window.Dispatcher.DispatchAsync(async () =>
-        {
-            try
-            {
-                cancellationToken.ThrowIfCancellationRequested();
-                taskCompletionSource.SetResult(await func());
-            }
-            catch (Exception ex)
-            {
-                taskCompletionSource.SetException(ex);
-            }
-        });
-
-        return taskCompletionSource.Task;
-    }
+    /// <inheritdoc />
+    protected override AppHost CreateAppHost(
+        IInitializerCollection initializers
+    ) => new MauiAppHost<TMainViewModel>(initializers);
 
     #endregion
 }

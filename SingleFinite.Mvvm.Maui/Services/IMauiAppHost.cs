@@ -22,36 +22,38 @@
 namespace SingleFinite.Mvvm.Maui.Services;
 
 /// <summary>
-/// The root object for the application responsible for initializing the
-/// host window and launching it.
+/// The root level application host.
 /// </summary>
-public interface IMauiApp
+public interface IMauiAppHost
 {
+    /// <summary>
+    /// The main view for the app.
+    /// </summary>
+    IView View { get; }
+
     /// <summary>
     /// The main window for the app.
     /// </summary>
     Window Window { get; }
 
     /// <summary>
-    /// Start the app.
+    /// Start the app host.
     /// </summary>
-    void Start();
-
-    /// <summary>
-    /// Bring the app to the foreground.
-    /// </summary>
-    void Activate();
+    /// <param name="serviceProvider">
+    /// The service provider to use with the app host.
+    /// </param>
+    void Start(IServiceProvider serviceProvider);
 }
 
 /// <summary>
-/// The root object for the application responsible for initializing the
-/// host window and launching it. 
+/// The root level application host.
 /// </summary>
 /// <typeparam name="TViewModel">The main view model type.</typeparam>
-public interface IMauiApp<TViewModel> : IMauiApp where TViewModel : IViewModel
+public interface IMauiAppHost<TViewModel> : IMauiAppHost
+    where TViewModel : IViewModel
 {
     /// <summary>
     /// The main view for the app.
     /// </summary>
-    IView<TViewModel> View { get; }
+    new IView<TViewModel> View { get; }
 }

@@ -19,9 +19,6 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using System.ComponentModel;
-using System.Diagnostics;
-using Microsoft.Maui.Controls.Shapes;
 using SingleFinite.Essentials;
 using SingleFinite.Mvvm.Services.Presenters;
 

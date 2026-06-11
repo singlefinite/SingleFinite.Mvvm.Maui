@@ -19,14 +19,14 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using System.Diagnostics;
 using SingleFinite.Essentials;
 using SingleFinite.Mvvm.Services.Presenters;
 
 namespace SingleFinite.Mvvm.Maui;
 
 /// <summary>
-/// Presents views in a simple control.
+/// Presents views provided by a presenter.  This class also supports
+/// animated transitions between views.
 /// </summary>
 public partial class ViewPresenter : TemplatedView
 {

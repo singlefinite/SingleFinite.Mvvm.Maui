@@ -105,29 +105,5 @@ public static class IResourcesExtensions
                 $"The resource with key '{key}' was not found."
             );
         }
-
-        /// <summary>
-        /// Set the app theme for the bindable object property.
-        /// </summary>
-        /// <param name="key">
-        /// This must be a key for an <see cref="AppThemeInfo"/> resource.
-        /// </param>
-        /// <param name="targetObject">The object to set the theme for.</param>
-        /// <param name="targetProperty">
-        /// The property to set the theme for.
-        /// </param>
-        public void SetAppTheme(
-            string key,
-            BindableObject targetObject,
-            BindableProperty targetProperty
-        )
-        {
-            var appThemeInfo = resources.Get<AppThemeInfo>(key);
-            targetObject.SetAppTheme(
-                targetProperty: targetProperty,
-                light: appThemeInfo.Light,
-                dark: appThemeInfo.Dark
-            );
-        }
     }
 }
